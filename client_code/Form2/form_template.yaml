@@ -1,0 +1,27 @@
+components:
+- components:
+  - layout_properties: {grid_position: 'IPMCFT,TWGWZT'}
+    name: label_Result
+    properties: {bold: true, text: 'Result:'}
+    type: Label
+  - layout_properties: {grid_position: 'GYNFUJ,LVAVJQ'}
+    name: label_Output
+    properties: {}
+    type: Label
+  - event_bindings: {click: outlined_button_back_click}
+    layout_properties: {grid_position: 'SXPCSF,ZWCZAB'}
+    name: outlined_button_back
+    properties: {align: left, role: outlined-button, text: Back}
+    type: Button
+  layout_properties: {slot: default}
+  name: content_panel
+  properties: {}
+  type: ColumnPanel
+- layout_properties: {slot: nav-right}
+  name: navbar_links
+  properties: {}
+  type: FlowPanel
+container:
+  properties: {html: '@theme:standard-page.html'}
+  type: HtmlTemplate
+is_package: true
