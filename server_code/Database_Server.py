@@ -56,10 +56,13 @@ def get_User_safe(username, password):
         conn.close()
 
 @anvil.server.callable
-def get_query_params(url):
-  query = url.split('?')[-1] if '?' in url else ''
-  query = urllib.parse.parse_qs(query)
-  return query
+def get_accountNumber_from_query(url):
+  query_string = url.split('?')[-1] if '?' in url else ''
+  if query_string:
+    query_params = urllib.parse.parse_qs(query_string)
+    if "AccountNo" in query_params:
+      return query_params["AccountNo"][0]
+  return None
 
 
 

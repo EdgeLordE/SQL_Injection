@@ -19,12 +19,12 @@ class Form1(Form1Template):
       if self.sql_injection_possible is True:
         result_state, result_text = anvil.server.call('get_User', self.text_Username.text, self.text_Password.text)
         url = anvil.js.window.location.href
-        query = anvil.server.call('get_query_params', url)
+        query = anvil.server.call('get_accountNumber_from_query', url)
         print(query)
       if self.sql_injection_possible is False:
         result_state, result_text = anvil.server.call('get_User_safe', self.text_Username.text, self.text_Password.text)
       open_form('Form2', result_text, result_state)
-      print(anvil.js.window.location.href)
+      
 
     def check_box_1_change(self, **event_args):
       """This method is called when this checkbox is checked or unchecked"""
