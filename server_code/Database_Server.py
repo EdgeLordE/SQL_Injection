@@ -5,6 +5,8 @@ import anvil.files
 from anvil.files import data_files
 import anvil.server
 import sqlite3
+import urllib.parse
+
 
 # This is a server module. It runs on the Anvil server,
 # rather than in the user's browser.
@@ -22,12 +24,11 @@ import sqlite3
 def get_User(username, password):
   conn = sqlite3.connect(data_files['SQL_Injection_database.db'])
   cursor = conn.cursor()
-
   try:
     res = list(cursor.execute(f"SELECT username FROM Users WHERE username = '{username}' AND password = '{password}'"))
     
     if res:
-        return True, f"SELECT username FROM Users WHERE username = '{username}' AND password = '{password}'"
+        return True, f"SELECT username, AccountNo FROM Users WHERE username = '{username}' AND password = '{password}'"
     else:
         return False, f"SELECT username FROM Users WHERE username = '{username}' AND password = '{password}'"
   except Exception as e:
@@ -52,5 +53,16 @@ def get_User_safe(username, password):
     except Exception as e:
         pass
     finally:
-        conn.close()  
+        conn.close()
+
+@anvil.server.callable
+def get_query_params(url):
+  query = url.split('?')[-1] if '?' in url else ''
+  query = urllib.parse.parse_qs(query)
+  return query
+
+
+
+
+
 
