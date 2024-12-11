@@ -1,34 +1,25 @@
-from ._anvil_designer import Form1Template
+from ._anvil_designer import StartpageTemplate
 from anvil import *
+import anvil.server
 import anvil.tables as tables
 import anvil.tables.query as q
+import anvil.js
 from anvil.tables import app_tables
-import anvil.server
-import anvil.js.window
 
 class Form1(Form1Template):
     def __init__(self, **properties):
-      # Set Form properties and Data Bindings.
-      self.init_components(**properties)
-      
-      self.sql_injection_possible = True
-      
+    # Set Form properties and Data Bindings.
+    self.init_components(**properties)
+    # Any code you write here will run before the form opens.
+    state = anvil.server.call('get_login_state')
+    if state is True:
+      open_form('Resultpage')
 
-    def outlined_button_Login_click(self, **event_args):
-      """This method is called when the button is clicked"""
-      if self.sql_injection_possible is True:
-        result_state, result_text = anvil.server.call('get_User', self.text_Username.text, self.text_Password.text)
-      if self.sql_injection_possible is False:
-        result_state, result_text = anvil.server.call('get_User_safe', self.text_Username.text, self.text_Password.text)
-      open_form('Form2', result_text, result_state)
-      
 
-    def check_box_1_change(self, **event_args):
-      """This method is called when this checkbox is checked or unchecked"""
-      if self.check_box_1.checked is True:
-        self.sql_injection_possible = False
-      else:
-        self.sql_injection_possible = True
-      
+  def outlined_button_1_click(self, **event_args):
+    username = self.textbox_username.text
+    passwort = self.textbox_passwort.text
+    Resultpage = open_form('Resultpage')
+    Resultpage.Label_result.text =  anvil.server.call("get_user",username, passwort)
 
     
