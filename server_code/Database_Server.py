@@ -1,4 +1,3 @@
-```py
 import anvil.files
 from anvil.files import data_files
 import anvil.tables as tables
@@ -48,4 +47,3 @@ def get_data_accountno(accountno):
 @anvil.server.callable
 def logout():
   anvil.server.session["login"] = False
-```

@@ -1,4 +1,4 @@
-from ._anvil_designer import StartpageTemplate
+from ._anvil_designer import Form1Template
 from anvil import *
 import anvil.server
 import anvil.tables as tables
@@ -8,18 +8,23 @@ from anvil.tables import app_tables
 
 class Form1(Form1Template):
     def __init__(self, **properties):
-    # Set Form properties and Data Bindings.
-    self.init_components(**properties)
-    # Any code you write here will run before the form opens.
-    state = anvil.server.call('get_login_state')
-    if state is True:
-      open_form('Resultpage')
+      # Set Form properties and Data Bindings.
+      self.init_components(**properties)
+      
+      # Any code you write here will run before the form opens.
+      state = anvil.server.call('get_login_state')
+      if state is True:
+        open_form('Form2')
 
 
-  def outlined_button_1_click(self, **event_args):
-    username = self.textbox_username.text
-    passwort = self.textbox_passwort.text
-    Resultpage = open_form('Resultpage')
-    Resultpage.Label_result.text =  anvil.server.call("get_user",username, passwort)
+    def outlined_button_Login_click(self, **event_args):
+      username = self.text_Username.text
+      passwort = self.text_Password.text
+      Resultpage = open_form('Form2')
+      Resultpage.label_Output.text =  anvil.server.call("get_user",username, passwort)
+
+    
+
+    
 
     

@@ -14,7 +14,7 @@ class Form2(Form2Template):
     queryparams = anvil.server.call('get_query_params', url)
     print(queryparams)
     accno = queryparams.get('AccountNo', [None])[0]
-    self.Label_result.text = anvil.server.call('get_data_accountno', accno)
+    self.label_Output.text = anvil.server.call('get_data_accountno', accno)
 
     # Any code you write here will run before the form opens.
 
