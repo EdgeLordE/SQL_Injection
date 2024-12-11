@@ -24,7 +24,7 @@ def get_user(username, passwort):
       else:
         raise ValueError("Empty Data")
   except Exception:
-      res = f"Login not successful: \n SELECT username FROM Users WHERE username = '{username}' AND password = '{passwort}'"
+      res = f"Login not successful: \nSELECT username FROM Users WHERE username = '{username}' AND password = '{passwort}'"
   return res
 
 @anvil.server.callable
