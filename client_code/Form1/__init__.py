@@ -27,6 +27,7 @@ class Form1(Form1Template):
 
     def check_box_1_change(self, **event_args):
       """This method is called when this checkbox is checked or unchecked"""
+      pass
       
       
 
