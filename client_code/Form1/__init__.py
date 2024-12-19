@@ -11,6 +11,7 @@ class Form1(Form1Template):
       # Set Form properties and Data Bindings.
       self.init_components(**properties)
       self.injection_possible = True
+      
       # Any code you write here will run before the form opens.
       state = anvil.server.call('get_login_state')
       if state is True:
@@ -21,12 +22,18 @@ class Form1(Form1Template):
       username = self.text_Username.text
       passwort = self.text_Password.text
       Resultpage = open_form('Form2')
-      Resultpage.label_Output.text =  anvil.server.call("get_user",username, passwort)
+      if self.injection_possible:
+        Resultpage.label_Output.text =  anvil.server.call("get_user",username, passwort)
+      else:
+        Resultpage.label_Output.text = anvil.server.call('get_user_safe', username, passwort)
       
 
-    def check_box_1_change(self, **event_args):
+    def check_box_safe_change(self, **event_args):
       """This method is called when this checkbox is checked or unchecked"""
-      pass
+      if self.injection_possible:
+        self.injection_possible = False
+      else:
+        self.injection_possible = True
       
       
 
