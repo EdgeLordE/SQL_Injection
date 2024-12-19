@@ -6,6 +6,7 @@ from anvil.tables import app_tables
 import anvil.server
 import sqlite3
 import urllib.parse
+
 @anvil.server.callable
 def get_login_state():
   if "login" not in anvil.server.session:
@@ -25,7 +26,6 @@ def get_user(username, passwort):
       balance = cursor.execute("SELECT Balances.balance FROM Users JOIN Balances ON Users.AccountNo = Balances.AccountNo WHERE Users.username = ? AND Users.password = ?",(username, passwort))
       result_balance = cursor.fetchone()[0]
       res = f"Welcome {username}. Your Balance is {result_balance}"
-      anvil.server.session['login'] = True
     elif result:
       res = "Login successful but 'AccountNo' was not passed."
       anvil.server.session["login"] = True
@@ -47,17 +47,17 @@ def get_data_accountno(accountno):
   cursor = conn.cursor()
   querybalance = f"SELECT balance FROM Balances WHERE AccountNo = {accountno}"
   queryusername = f"SELECT username FROM Users WHERE AccountNo = {accountno}"
-  
   try:
-   return list(cursor.execute(queryusername)) + list(cursor.execute(querybalance))
+    if len(list(cursor.execute(querybalance))) == 0:
+      return f"User not found.\n{querybalance}\n{queryusername}"
+    else:
+      return list(cursor.execute(queryusername)) + list(cursor.execute(querybalance))
   except:
     return ""
     
 @anvil.server.callable
 def logout():
   anvil.server.session["login"] = False
-
-
 
 
 @anvil.server.callable
@@ -81,11 +81,15 @@ def get_user_safe(username, passwort):
 def get_data_accountno_safe(accountno):
   conn = sqlite3.connect(data_files["database.db"])
   cursor = conn.cursor()
-  querybalance = "SELECT balance FROM Balances WHERE AccountNo = ?"(accountno)
-  queryusername = "SELECT username FROM Users WHERE AccountNo = ?"(accountno)
-  
+  querybalance = "SELECT balance FROM Balances WHERE AccountNo = ?", (accountno)
+  queryusername = "SELECT username FROM Users WHERE AccountNo = ?", (accountno)
   try:
-   return list(cursor.execute(queryusername)) + list(cursor.execute(querybalance).fetchone())
+    if len(list(cursor.execute(querybalance))) == 0:
+      return f"User not found.\n{querybalance}\n{queryusername}"
+    else:
+      return list(cursor.execute(queryusername)) + list(cursor.execute(querybalance))
   except:
     return ""
+
+
     

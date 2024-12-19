@@ -13,7 +13,11 @@ class Form2(Form2Template):
     url = anvil.js.window.location.href
     queryparams = anvil.server.call('get_query_params', url)
     accno = queryparams.get('AccountNo', [None])[0]
-    self.label_Output.text = anvil.server.call('get_data_accountno', accno)
+    if not anvil.server.call('get_login_state'):
+      self.label_Output.text = anvil.server.call('get_data_accountno', accno)
+    elif anvil.server.call('get_login_state'):
+      self.label_Output.text = anvil.server.call('get_data_accountno_safe', accno)
+      
 
     
 
