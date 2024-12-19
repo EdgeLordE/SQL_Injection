@@ -19,7 +19,14 @@ def get_user(username, passwort):
   try:
     res = cursor.execute(f"SELECT username FROM Users WHERE username = '{username}' AND password = '{passwort}'")
     result = cursor.fetchone()
-    if result:
+    res1 = cursor.execute("Select AccountNo from Users Where username = ? AND password = ?", (username, passwort))
+    result1 = cursor.fetchone()
+    if result1:
+      balance = cursor.execute("SELECT Balances.balance FROM Users JOIN Balances ON Users.AccountNo = Balances.AccountNo WHERE Users.username = ? AND Users.password = ?",(username, passwort))
+      result_balance = cursor.fetchone()[0]
+      res = f"Welcome {username}. Your Balance is {result_balance}"
+      anvil.server.session['login'] = True
+    elif result:
       res = "Login successful but 'AccountNo' was not passed."
       anvil.server.session["login"] = True
     else:
