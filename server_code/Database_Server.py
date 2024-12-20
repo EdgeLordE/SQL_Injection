@@ -11,7 +11,9 @@ import urllib.parse
 def get_login_state():
   if "login" not in anvil.server.session:
     anvil.server.session["login"] = False
-  return anvil.server.session["login"]
+  if "injection_possible" not in anvil.server.session:
+    anvil.server.session["injection_possible"] = True
+  return anvil.server.session["login"], anvil.server.session['injection_possible']
   
 @anvil.server.callable
 def get_user(username, passwort):
@@ -26,9 +28,12 @@ def get_user(username, passwort):
       balance = cursor.execute("SELECT Balances.balance FROM Users JOIN Balances ON Users.AccountNo = Balances.AccountNo WHERE Users.username = ? AND Users.password = ?",(username, passwort))
       result_balance = cursor.fetchone()[0]
       res = f"Welcome {username}. Your Balance is {result_balance}"
+      anvil.server.session['login'] = True
+      anvil.server.session["injection_possible"] = True
     elif result:
       res = "Login successful but 'AccountNo' was not passed."
-      anvil.server.session["login"] = True
+      anvil.server.session['login'] = True
+      anvil.server.session["injection_possible"] = True
     else:
       raise ValueError("Empty Data")
   except Exception:
@@ -68,9 +73,11 @@ def get_user_safe(username, passwort):
     res = cursor.execute("SELECT username FROM Users WHERE username = ? AND password = ?", (username, passwort))
     result = cursor.fetchone()
     if result:
-      balance = list(cursor.execute("SELECT Balances.balance FROM Users JOIN Balances ON Users.AccountNo = Balances.AccountNo WHERE Users.username = ? AND Users.password = ?",(username, passwort)))
-      res = f"Welcome {username}. Your Balance is {balance}"
+      balance = cursor.execute("SELECT Balances.balance FROM Users JOIN Balances ON Users.AccountNo = Balances.AccountNo WHERE Users.username = ? AND Users.password = ?",(username, passwort))
+      result_balance = cursor.fetchone()[0]
+      res = f"Welcome {username}. Your Balance is {result_balance}"
       anvil.server.session["login"] = True
+      anvil.server.session["injection_possible"] = False
     else:
       raise ValueError("Empty Data")
   except Exception:
@@ -89,7 +96,7 @@ def get_data_accountno_safe(accountno):
     else:
       return list(cursor.execute(queryusername)) + list(cursor.execute(querybalance))
   except:
-    return ""
+    return f"User not found.\n{querybalance}\n{queryusername}"
 
 
     

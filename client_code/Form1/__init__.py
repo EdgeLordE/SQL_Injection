@@ -13,7 +13,7 @@ class Form1(Form1Template):
     self.injection_possible = True
     
     # Any code you write here will run before the form opens.
-    state = anvil.server.call('get_login_state')
+    state = anvil.server.call('get_login_state')[0]
     if state is True:
       open_form('Form2')
 
